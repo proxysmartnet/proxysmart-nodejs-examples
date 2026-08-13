@@ -1,0 +1,19 @@
+{
+  "name": "proxysmart-nodejs-examples",
+  "version": "1.0.0",
+  "description": "Safe Node.js examples for checking HTTP proxy health, exit IP, latency, and retry behaviour.",
+  "type": "module",
+  "main": "check-proxy.js",
+  "scripts": {
+    "start": "node check-proxy.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "axios": "^1.19.0",
+    "https-proxy-agent": "^9.1.0"
+  },
+  "license": "MIT"
+}
