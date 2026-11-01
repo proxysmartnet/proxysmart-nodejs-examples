@@ -64,6 +64,47 @@ npm test
 The test suite verifies that credentials are removed from log labels,
 authentication failures are not retried, and transient failures can recover.
 
+## Observe exit IP continuity separately from request health
+
+The dependency-free `summarizeObservations` example in
+[`analyze-session.mjs`](analyze-session.mjs) summarizes ordered
+`{ ok, exitIp, latencyMs }` records without making network requests.
+A failed request or a missing/invalid IP breaks continuity; only neighboring
+successful observations with valid IPs can be compared. Zero comparable pairs
+returns `null`, not evidence of stability. Equivalent supported IPv6 spellings
+are normalized before comparison.
+
+```bash
+node session-fixture.mjs
+node --test analyze-session.test.mjs
+```
+
+The fixture uses reserved documentation addresses and synthetic timings, not
+service credentials or measured proxy performance. Its six requests contain
+five successes, one failure and one observed IP change across three comparable
+pairs. The summary contains aggregate counts and a successful-request latency
+median, not raw IPs. Keep the collector's HTTP status, authentication, timeout
+and retry policies separate from this analysis.
+
+Only test proxies and destinations you are authorized to use. Do not log
+authenticated URLs, passwords or customer traffic; restrict access and retention
+for real observations. An observed IP does not prove carrier, city, address type,
+user identity or application-session persistence.
+
+### Match the connection type to the QA plan
+
+If an authorized test specifically requires a Vietnamese mobile or residential
+connection, ProxySmart maintains separate catalogues for
+[mobile 4G connections](https://proxysmart.net/proxy-4g) and
+[residential connections](https://proxysmart.net/proxy-dan-cu). These are our own
+commercial catalogues, not independent recommendations. Check the particular
+package's protocols, authentication, rotation policy and duration against the
+test plan. This HTTP health-check example and the offline analyzer are
+provider-independent and do not require purchasing either connection type.
+
+The continuity example was prepared with AI assistance and checked with
+automated tests.
+
 ## Failure policy
 
 | Failure | Retry? | Reason |
